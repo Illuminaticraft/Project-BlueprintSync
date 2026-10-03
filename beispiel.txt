@@ -1,11 +1,11 @@
-"Version: 1"
-"Datei_Sync=D:\Programme\Steam\steamapps\common\SaveSync\SaveSync.exe"
-"Datei_Ludosavi=D:\Programme\Steam\steamapps\common\SaveSync\ludusavi.exe"
-
-
-
-"AnzahlBP=2"
-"Blueprint1=1.0 with Konstantin"
-"Ludusavi_Backup1=1.0 with Konstantin Blueprints"
-"Blueprint2=FISCIT Corporate"
-"Ludusavi_Backup2=FISCIT Corporate Blueprints"
+[Version]
+Version=1.0
+[Paths]
+Datei_Sync=D:\Programme\Steam\steamapps\common\SaveSync\SaveSync.exe
+Datei_Ludosavi=D:\Programme\Steam\steamapps\common\SaveSync\ludusavi.exe
+[Blueprints]
+AnzahlBlueprints=2
+Blueprint1=1.0 with Konstantin
+Ludusavi_Backup1=1.0 with Konstantin Blueprints
+Blueprint2=FISCIT Corporate
+Ludusavi_Backup2=FISCIT Corporate Blueprints
