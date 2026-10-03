@@ -68,6 +68,9 @@ for /L %%i in (1,1,%NumberOfBPs%) do (
     set "input="
     set /p input=
     >>"%BPSCpath%" echo Blueprint%%i=!input!
+    echo Gib den Namen des zugehörigen Ludusavi-Backups ein ^(z.B. 1.0 mit Konstantin Blueprints^):
+    set "input="
+    set /p input=
     >>"%BPSCpath%" echo Ludusavi_Backup%%i=!input! Blueprints
 )
 ::add custom launch option for Satisfactory in Steam
