@@ -60,7 +60,16 @@ timeout /t 1 /nobreak >nul
 cls
 echo .
 echo ===================================================
-echo   2. Starte Satisfactory...
+echo   4. Starte Satisfactory...
 echo ===================================================
 start %1
+echo Warte, bis Satisfactory vollstaendig geladen ist...
 
+:wait_for_game
+timeout /t 2 /nobreak >nul
+tasklist /FI "IMAGENAME eq FactoryGameSteam.exe" 2>NUL | find /I /N "FactoryGameSteam.exe" >nul
+if "%ERRORLEVEL%"==0 goto game_running
+
+goto wait_for_game
+
+:game_running
