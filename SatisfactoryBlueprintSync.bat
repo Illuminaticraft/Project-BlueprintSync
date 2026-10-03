@@ -7,7 +7,7 @@ set "Datei_Ludosavi=D:\Programme\Steam\steamapps\common\SaveSync\ludusavi.exe"
 set "Blueprint=%LOCALAPPDATA%\FactoryGame\Saved\SaveGames\Blueprints\1.0 with Konstantin"
 ::set "Blueprint=%LOCALAPPDATA%\FactoryGame\Saved\SaveGames\Blueprints\1.0 with Konstantin"
 
-tasklist /FI "IMAGENAME eq SaveSync.exe" 2>NUL | find /I /N "SaveSync.exe"
+tasklist /FI "IMAGENAME eq SaveSync.exe" 2>nul | find /I /N "SaveSync.exe"
 if "%ERRORLEVEL%"=="1" (
 	echo .
 	echo ===================================================
@@ -68,7 +68,7 @@ echo Warte, bis Satisfactory vollstaendig geladen ist...
 
 :wait_for_game
 timeout /t 2 /nobreak >nul
-tasklist /FI "IMAGENAME eq FactoryGameSteam.exe" 2>NUL | find /I /N "FactoryGameSteam.exe" >nul
+tasklist /FI "IMAGENAME eq FactoryGameSteam.exe" 2>nul | find /I /N "FactoryGameSteam.exe" >nul
 if "%ERRORLEVEL%"=="1" goto wait_for_game
 
 
@@ -79,3 +79,22 @@ echo   5.  Satisfactory läuft...
 echo ===================================================
 echo Viel Spass beim Spielen und Bauen!
 
+:wait_for_exit
+timeout /t 5 /nobreak >nul
+tasklist /FI "IMAGENAME eq FactoryGameSteam.exe" 2>nul | find /I /N "FactoryGameSteam.exe" >nul
+if "%ERRORLEVEL%"=="0" goto wait_for_exit
+
+cls
+echo .
+echo ===================================================
+echo   6. Spiel beendet! Erstelle neues Backup...
+echo ===================================================
+timeout /t 1 /nobreak >nul
+"%Datei_Ludosavi%" backup --force "1.0 with Konstantin Blueprints"
+
+cls
+echo .
+echo ===================================================
+echo   7. Backup abgeschlossen!
+echo ===================================================
+timeout /t 1 /nobreak >nul

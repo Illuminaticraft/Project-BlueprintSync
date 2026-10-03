@@ -1,5 +1,6 @@
 @echo off
 title install and Repair SatisfactoryBlueprintSync
+::ask if install or repair
 
 ::Install
 
@@ -22,6 +23,7 @@ title install and Repair SatisfactoryBlueprintSync
 
 ::search for SatisfactoryBlueprintSync.bat in the installation folder
     ::if found, delete the file and 
+    
 ::copy the backup version to the installation folder
 
 ::search for the .txt with all the paths to the files
