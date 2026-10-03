@@ -20,6 +20,7 @@ Add-Type -AssemblyName System.Windows.Forms, System.Drawing
 Add-Type -Name Win -Namespace BPS -MemberDefinition @'
 [DllImport("kernel32.dll")] public static extern IntPtr GetConsoleWindow();
 [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+[DllImport("user32.dll")] public static extern bool AllowSetForegroundWindow(int dwProcessId);
 [DllImport("dwmapi.dll")] public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
 [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)] public static extern int SetWindowTheme(IntPtr hWnd, string app, string idList);
 '@
@@ -29,7 +30,7 @@ Add-Type -Name Win -Namespace BPS -MemberDefinition @'
 $ConfigPath    = Join-Path $env:LOCALAPPDATA 'FactoryGame\BlueprintSync\BPSconfig.ini'
 $BlueprintRoot = Join-Path $env:LOCALAPPDATA 'FactoryGame\Saved\SaveGames\Blueprints'
 
-$State = @{ Abort = $false; Skip = $false; Done = $false; HadError = $false }
+$State = @{ Abort = $false; Skip = $false; NoSync = $false; Done = $false; HadError = $false; GameStarted = $false }
 
 # ============================================================ Design
 $T = @{
@@ -141,14 +142,47 @@ function Read-Config {
     $cfg
 }
 
-# Startet das Spiel mit den Argumenten von Steam (%command%) oder ueber Steam selbst
+# Startet das Spiel mit den Argumenten von Steam (%command%) oder ueber Steam selbst.
+# Beim Start ueber Steam ruft Steam die Startoption - also dieses Skript - ein zweites Mal auf;
+# das LaunchEvent sagt dieser zweiten Instanz, dass sie nur das Spiel starten soll.
 function Start-Game {
+    $State.GameStarted = $true
     $a = "$env:BPS_ARGS".Trim()
-    if (-not $a) { Start-Process 'steam://rungameid/526870'; return }
+    if (-not $a) {
+        [void]$LaunchEvent.Set()
+        Start-Process 'steam://rungameid/526870'
+        return
+    }
     if ($a -match '^"([^"]+)"\s*(.*)$' -or $a -match '^(.+?\.exe)\s*(.*)$' -or $a -match '^(\S+)\s*(.*)$') {
         $exe = $Matches[1]; $rest = $Matches[2]
     }
     if ($rest) { Start-Process -FilePath $exe -ArgumentList $rest } else { Start-Process -FilePath $exe }
+}
+
+function Test-GameRunning { [bool](Get-Process -Name 'FactoryGame*' -ErrorAction SilentlyContinue) }
+
+# Ohne Oberflaeche: Spiel starten und warten, bis es laeuft (damit die von Steam
+# gestartete zweite Instanz solange das LaunchEvent sieht)
+function Start-GameAndWait {
+    Start-Game
+    $end = (Get-Date).AddSeconds(120)
+    while (-not (Test-GameRunning) -and (Get-Date) -lt $end) { Start-Sleep -Milliseconds 500 }
+}
+
+# ------------------------------------------------------- Nur eine Instanz
+$Mutex       = New-Object Threading.Mutex($false, 'Local\SatisfactoryBlueprintSync')
+$LaunchEvent = New-Object Threading.EventWaitHandle($false, 'ManualReset', 'Local\SatisfactoryBlueprintSync_Launch')
+$ShowEvent   = New-Object Threading.EventWaitHandle($false, 'AutoReset', 'Local\SatisfactoryBlueprintSync_Show')
+try { $isFirst = $Mutex.WaitOne(0) } catch [Threading.AbandonedMutexException] { $isFirst = $true }
+if (-not $isFirst) {
+    if ($LaunchEvent.WaitOne(0) -and "$env:BPS_ARGS".Trim()) {
+        Start-Game   # von der laufenden Instanz ueber Steam angestossen: nur das Spiel starten
+    } else {
+        # Bereits laufendes Fenster in den Vordergrund holen
+        [void][BPS.Win]::AllowSetForegroundWindow(-1)
+        [void]$ShowEvent.Set()
+    }
+    exit
 }
 
 # --------------------------------------------------------- Konfiguration
@@ -157,7 +191,7 @@ if (-not $cfg.Datei_Sync) {
     Show-Dialog $null 'Satisfactory Blueprint Sync' ("Es wurde keine Konfiguration gefunden:`n$ConfigPath`n`n" +
         "Bitte führe InstallAndRepair.bat aus dem Ludusavi-Backup-Ordner aus.`n" +
         "Satisfactory wird jetzt ohne Blueprint-Sync gestartet.") @('OK') 'warning' | Out-Null
-    Start-Game
+    Start-GameAndWait
     exit
 }
 
@@ -203,6 +237,7 @@ $txtLog    = New-Ctl TextBox $logCard 12 8 480 102 @{
     Multiline = $true; ReadOnly = $true; ScrollBars = 'Vertical'; BorderStyle = 'None'
     BackColor = $T.Input; ForeColor = $T.Muted; Font = (New-Font 8.5 'Regular' 'Consolas')
 }
+$btnNoSync = New-Button $form 'Ohne Sync spielen' 20 ($logCard.Bottom + 16) 150 34
 $btnNext   = New-Button $form 'Weiter' 300 ($logCard.Bottom + 16) 104 34 -Primary
 $btnCancel = New-Button $form 'Abbrechen' 414 ($logCard.Bottom + 16) 106 34
 $btnNext.Enabled = $false
@@ -236,12 +271,19 @@ function Set-Progress([double]$Fraction) {
     $fill.Width = [int]($track.Width * [Math]::Max(0, [Math]::Min(1, $Fraction)))
 }
 
+function Show-Front {
+    if ($form.WindowState -eq 'Minimized') { $form.WindowState = 'Normal' }
+    $form.TopMost = $true; $form.Activate(); $form.TopMost = $false
+}
+
 # Wartet, ohne die Oberflaeche einzufrieren. Gibt $true zurueck, sobald $Until erfuellt ist.
 function Wait-UI([double]$Seconds, [scriptblock]$Until) {
     $end = (Get-Date).AddSeconds($Seconds)
     while ((Get-Date) -lt $end) {
         [Windows.Forms.Application]::DoEvents()
         if ($State.Abort) { throw 'BPS_ABORT' }
+        if ($State.NoSync) { throw 'BPS_NOSYNC' }
+        if ($ShowEvent.WaitOne(0)) { Show-Front }
         if ($Until -and (& $Until)) { return $true }
         Start-Sleep -Milliseconds 50
     }
@@ -250,8 +292,6 @@ function Wait-UI([double]$Seconds, [scriptblock]$Until) {
 
 function Test-Steam    { [bool](Get-Process -Name 'steam' -ErrorAction SilentlyContinue) }
 function Test-SaveSync { [bool](Get-Process -Name 'SaveSync' -ErrorAction SilentlyContinue) }
-function Test-GameRunning { [bool](Get-Process -Name 'FactoryGame*' -ErrorAction SilentlyContinue) }
-
 # Startet SaveSync (bzw. holt es in den Vordergrund). Gibt $false zurueck, wenn es fehlt.
 function Start-SaveSync {
     if (-not (Test-Path -LiteralPath $cfg.Datei_Sync)) {
@@ -293,6 +333,14 @@ function Request-Abort {
 }
 
 $btnNext.add_Click({ $State.Skip = $true })
+$btnNoSync.add_Click({
+    if ($State.Done) { return }
+    if (Test-GameRunning) {
+        $msg = 'Satisfactory läuft bereits. Blueprint Sync jetzt beenden? Es wird dann kein Blueprint-Backup erstellt.'
+        if ('Beenden' -ne (Show-Dialog $form 'Ohne Sync spielen' $msg @('Beenden', 'Weiter warten') 'warning')) { return }
+    }
+    $State.NoSync = $true
+})
 $btnCancel.add_Click({
     if ($State.Done) { $form.Close() }
     elseif (Request-Abort) { $State.Abort = $true }
@@ -317,7 +365,8 @@ try {
     } else {
         Set-Status 'Starte Steam …'
         $steamExe = (Get-ItemProperty 'HKCU:\Software\Valve\Steam' -ErrorAction SilentlyContinue).SteamExe
-        if ($steamExe -and (Test-Path -LiteralPath $steamExe)) { Start-Process -FilePath $steamExe }
+        # -silent: Steam startet minimiert im Infobereich
+        if ($steamExe -and (Test-Path -LiteralPath $steamExe)) { Start-Process -FilePath $steamExe -ArgumentList '-silent' }
         else { Start-Process 'steam://open/main' }
         if (Wait-UI 120 { Test-Steam }) {
             Set-Status 'Warte, bis Steam bereit ist …'
@@ -337,7 +386,7 @@ try {
 
     # 3. Countdown zum Ueberpruefen der Syncs
     Set-Step 3 'active'
-    $form.TopMost = $true; $form.Activate(); $form.TopMost = $false
+    Show-Front
     $btnNext.Enabled = $true
     for ($s = 60; $s -ge 1; $s--) {
         Set-Progress ($s / 60)
@@ -380,10 +429,8 @@ try {
     # 6. Warten, bis das Spiel beendet wird
     Set-Step 6 'active'
     Set-Status 'Viel Spaß beim Spielen und Bauen!'
-    $form.WindowState = 'Minimized'
     while (Test-GameRunning) { Wait-UI 2 | Out-Null }
-    $form.WindowState = 'Normal'
-    $form.Activate()
+    Show-Front
     Write-Log 'Satisfactory beendet.'
     Set-Step 6 'done'
 
@@ -410,6 +457,20 @@ try {
     Set-Status $(if ($State.HadError) { 'Fertig – mit Fehlern, siehe Protokoll.' } else { 'Backup abgeschlossen.' })
 } catch {
     if ("$_" -eq 'BPS_ABORT') { $State.Done = $true; $form.Close(); exit }
+    if ("$_" -eq 'BPS_NOSYNC') {
+        # Ohne Sync: Spiel starten (falls noch nicht geschehen) und schliessen, sobald es laeuft
+        $State.NoSync = $false
+        $btnNoSync.Enabled = $false; $btnNext.Enabled = $false
+        Set-Status 'Starte Satisfactory ohne Blueprint-Sync …'
+        Write-Log 'Ohne Sync spielen gewählt.'
+        try {
+            if (-not $State.GameStarted -and -not (Test-GameRunning)) { Start-Game }
+            Wait-UI 120 { Test-GameRunning } | Out-Null
+        } catch { }
+        $State.Done = $true
+        $form.Close()
+        exit
+    }
     Write-Log "FEHLER: $($_.Exception.Message)"
     Set-Status 'Abgebrochen wegen eines Fehlers, siehe Protokoll.'
     $State.HadError = $true
@@ -417,6 +478,7 @@ try {
 
 $State.Done = $true
 $btnNext.Enabled = $false
+$btnNoSync.Enabled = $false
 $btnCancel.Text = 'Schließen'
 
 # Ohne Fehler nach 3 Sekunden schliessen, sonst offen lassen
