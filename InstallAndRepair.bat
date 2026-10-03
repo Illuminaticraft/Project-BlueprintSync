@@ -2,7 +2,7 @@
 @echo off
 setlocal
 set "BPS_SELF=%~f0"
-powershell -NoProfile -STA -ExecutionPolicy Bypass -Command "iex ([IO.File]::ReadAllText($env:BPS_SELF))"
+powershell -WindowStyle Hidden -NoProfile -STA -ExecutionPolicy Bypass -Command "iex ([IO.File]::ReadAllText($env:BPS_SELF))"
 exit /b %errorlevel%
 #>
 
