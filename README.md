@@ -30,7 +30,7 @@ Beide Skripte haben eine grafische Oberfläche im Dark Mode. Es muss nichts zus�
 - Windows 10 oder 11
 - Satisfactory über **Steam**
 - **SaveSync** und [**Ludusavi**](https://github.com/mtkennerly/ludusavi). Beide `.exe`-Dateien sollten im selben Ordner oder in dessen Unterordnern liegen, z.B. `D:\SteamLibrary\steamapps\common\SaveSync\`.
-- **Ludusavi** ist so eingerichtet, dass es für jede Welt ein eigenes Blueprint-Backup gibt, z.B. `1.0 with Konstantin Blueprints`, und dass Ludusavi dieses Backup unter genau diesem Namen wiederherstellen und sichern kann.
+- **Ludusavi** ist so eingerichtet, dass es für jede Welt ein eigenes Blueprint-Backup gibt, z.B. `Weltname Blueprints`, und dass Ludusavi dieses Backup unter genau diesem Namen wiederherstellen und sichern kann.
 - **SaveSync** synchronisiert den Ludusavi-Backup-Ordner zwischen euch.
 
 ---
@@ -41,15 +41,15 @@ Die beiden `.bat`-Dateien werden **zusammen mit den Blueprints im Ludusavi-Backu
 
 ```
 C:\Users\<Name>\ludusavi-backup\                        <- Backup-Ordner
-├── 1.0 with Konstantin Blueprints\                      <- Backup-Name
+├── Weltname Blueprints\                      <- Backup-Name
 │   └── drive-C\Users\Admin\AppData\Local\FactoryGame\Saved\SaveGames\blueprints\
-│       └── 1.0 with Konstantin\                         <- Weltname
+│       └── Weltname\                         <- Weltname
 │           ├── InstallAndRepair.bat
 │           ├── SatisfactoryBlueprintSync.bat
 │           └── *.sbp, *.sbpcfg                          (Blueprints)
-└── FICSIT Corporate\
+└── Weltname\
     └── drive-C\...\SaveGames\blueprints\
-        └── FICSIT Corporate\
+        └── Weltname\
 ```
 
 Alle Backups, die einen Ordner `...\SaveGames\blueprints\<Welt>` enthalten, werden als Welt angeboten. Andere Spiele im Backup-Ordner werden ignoriert. Der Backup-Name muss nicht auf „Blueprints“ enden.
@@ -61,7 +61,7 @@ Alle Backups, die einen Ordner `...\SaveGames\blueprints\<Welt>` enthalten, werd
 ### 1. Installer starten
 
 Öffne den Blueprint-Ordner im Ludusavi-Backup, z.B.
-`C:\Users\<Name>\ludusavi-backup\1.0 with Konstantin Blueprints\drive-C\...\blueprints\1.0 with Konstantin`,
+`C:\Users\<Name>\ludusavi-backup\Weltname Blueprints\drive-C\...\blueprints\Weltname`,
 und führe **`InstallAndRepair.bat`** per Doppelklick aus.
 
 ### 2. Programme
@@ -163,10 +163,10 @@ Datei_Ludosavi=D:\SteamLibrary\steamapps\common\SaveSync\ludusavi.exe
 Backup_Ordner=C:\Users\<Name>\ludusavi-backup
 [Blueprints]
 AnzahlBlueprints=2
-Blueprint1=1.0 with Konstantin
-Ludusavi_Backup1=1.0 with Konstantin Blueprints
-Blueprint2=FICSIT Corporate
-Ludusavi_Backup2=FICSIT Corporate
+Blueprint1=Weltname
+Ludusavi_Backup1=Weltname Blueprints
+Blueprint2=Weltname
+Ludusavi_Backup2=Weltname
 ```
 
 | Schlüssel | Bedeutung |
