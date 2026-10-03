@@ -9,13 +9,14 @@ set "Blueprint=%LOCALAPPDATA%\FactoryGame\Saved\SaveGames\Blueprints\1.0 with Ko
 
 tasklist /FI "IMAGENAME eq SaveSync.exe" 2>NUL | find /I /N "SaveSync.exe"
 if "%ERRORLEVEL%"=="1" (
-	echo
+	echo .
 	echo ===================================================
 	echo   1. Initialisiere: Starte SaveSync
 	echo ===================================================
 	start "" "%Datei_Sync%" 
 	timeout /t 6 /nobreak >nul
 ) else (
+	echo .
 	echo ===================================================
 	echo   1. Initialisiere: Oeffne SaveSync
 	echo ===================================================
@@ -37,7 +38,7 @@ for /L %%i in (60,-1,1) do (
 	echo ===================================================
     echo Ueberpruefe deine Syncs. Noch %%i Sekunden. [W zum Ueberspringen]
     choice /t 1 /d n /c wn >nul
-    if !errorlevel! equ 1 goto weiter
+    if "%ERRORLEVEL%"=="1" goto weiter
 )
 
 :weiter
@@ -68,8 +69,13 @@ echo Warte, bis Satisfactory vollstaendig geladen ist...
 :wait_for_game
 timeout /t 2 /nobreak >nul
 tasklist /FI "IMAGENAME eq FactoryGameSteam.exe" 2>NUL | find /I /N "FactoryGameSteam.exe" >nul
-if "%ERRORLEVEL%"==0 goto game_running
+if "%ERRORLEVEL%"=="1" goto wait_for_game
 
-goto wait_for_game
 
-:game_running
+cls
+echo .
+echo ===================================================
+echo   5.  Satisfactory läuft...
+echo ===================================================
+echo Viel Spass beim Spielen und Bauen!
+
