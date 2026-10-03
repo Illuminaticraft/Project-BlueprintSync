@@ -64,5 +64,3 @@ echo   2. Starte Satisfactory...
 echo ===================================================
 start %1
 
-
-::test
