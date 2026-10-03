@@ -8,7 +8,7 @@ set "Blueprint=1.0 with Konstantin"
 set "Ludusavi_Backup=1.0 with Konstantin Blueprints"
 ::set "Blueprint=%LOCALAPPDATA%\FactoryGame\Saved\SaveGames\Blueprints\1.0 with Konstantin"
 
-tasklist /FI "IMAGENAME eq SaveSync.exe" 2>nul | find /I /N "SaveSync.exe"
+tasklist /FI "IMAGENAME eq SaveSync.exe" 2>nul | find /I /N "SaveSync.exe" >nul
 if "%ERRORLEVEL%"=="1" (
 	echo.
 	echo  ===================================================
@@ -22,8 +22,8 @@ if "%ERRORLEVEL%"=="1" (
 	echo    1. Initialisiere: Oeffne SaveSync
 	echo  ===================================================
 	timeout /t 1 /nobreak >nul
-start "" "%Datei_Sync%" 
-timeout /t 4 /nobreak >nul
+	start "" "%Datei_Sync%" 
+	timeout /t 4 /nobreak >nul
 )
 
 
@@ -67,7 +67,11 @@ echo.
 echo  ===================================================
 echo    4. Starte Satisfactory...
 echo  ===================================================
-start %1
+if "%~1"=="" (
+	start "" "steam://rungameid/526870"
+) else (
+	start "" %*
+)
 echo    Warte, bis Satisfactory vollstaendig geladen ist...
 
 :wait_for_game
