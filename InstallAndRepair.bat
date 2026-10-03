@@ -88,8 +88,8 @@ function New-DarkForm([string]$Title, [int]$W, [int]$H) {
 function New-Card($Parent, $X, $Y, $W, $H, [string]$Title) {
     $card = New-Ctl Panel $Parent $X $Y $W $H @{ BackColor = $T.Card }
     if ($Title) {
-        # Ganz nach hinten, damit die Ueberschrift keine Buttons in der Kartenecke verdeckt
-        $heading = New-Ctl Label $card 18 14 ($W - 36) 24 @{ Text = $Title; Font = (New-Font 11 'Bold') }
+        # Nur so breit wie der Text, damit die Ueberschrift keine Buttons in der Kartenecke verdeckt
+        $heading = New-Ctl Label $card 18 14 0 24 @{ Text = $Title; Font = (New-Font 11 'Bold'); AutoSize = $true }
         $heading.SendToBack()
     }
     $card
