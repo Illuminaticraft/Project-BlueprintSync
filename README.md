@@ -64,7 +64,8 @@ Alle Backups, die einen Ordner `...\SaveGames\blueprints\<Welt>` enthalten, werd
 Klicke oben auf **OTHER** und scrolle nach unten zu **Redirects:**.
 Stelle sicher, dass **Reverse sequence of redirects when restoring** aus ist.
 Füge über das blaue Plus einen Redirect hinzu. Stelle den Modus auf **Bidirectional** ein.
-Gib bei **Source (original location)** deinen Pfad zum Ordner `FactoryGame` ein. Diesen findest du unter `%LOCALAPPDATA%`.
+Gib bei **Source (original location)** deinen Pfad zum Ordner `FactoryGame` ein. Diesen findest du unter `%LOCALAPPDATA%`. Z. B.:
+`C:\Users\User\AppData\Local\FactoryGame\`
 Gib bei **Target (new location)** den folgenden Pfad ein:
 `C:\Users\Admin\AppData\Local\FactoryGame\`
 
@@ -74,10 +75,13 @@ Gib bei **Target (new location)** den folgenden Pfad ein:
 `%LOCALAPPDATA%\FactoryGame\Saved\SaveGames\blueprints\`
 Der Ordner mit den Blueprints deiner Welt sollte dort liegen. 
 Falls dies nicht der Fall ist gibt es in dieser Welt noch keine Blueprints. Dann muss der Ordner selbst erstellt werden. Der Ordner bekommt dann den Namen der Welt.
-Wenn der Ordner der Blueprints für die Welt existiert füge die Dateinen `InstallAndRepair.bat` und `SatisfactoryBlueprintSync.bat` ein.
+Wenn der Ordner der Blueprints für die Welt existiert füge die Dateien `InstallAndRepair.bat` und `SatisfactoryBlueprintSync.bat` ein.
 
 ### 3. Wenn du über Savesync für die Welt eingeladen worden bist, folge diesen Anweisungen:
 
+Öffne den Speicherort aller Blueprints von Satisfactory unter:
+`%LOCALAPPDATA%\FactoryGame\Saved\SaveGames\blueprints\`
+Stelle sich, dass es den Ordner der Blueprints für die Welt, die mit dir geteilt wurde, gibt und stelle sicher, dass sich in diesem Ordner mindestens eine Datei befindet. Nur so kann Ludusavi den Ordner finden.
 
 ### 4. Blueprintordner in Ludusavi hinzufügen:
 
@@ -85,6 +89,11 @@ Gehe dann wieder in Ludusavi rein und klicke auf **Custom Games**.
 Klicke hier auf **Add game**.
 Drücke unter Paths auf das **blaue Plus**. Wähle den Blueprintordner der Welt entweder über das Ordnersymbol aus oder gib den Pfad manuell ein. Z. B.: `C:\Users\User\AppData\Local\FactoryGame\Saved\SaveGames\blueprints\Blueprintordner der Welt`
 Als Name gibst du den Namen des Blueprintordners ein gefolgt von "Blueprints". Z. B.: "Blueprintordner der Welt Blueprints"
+Klicke nun auf Preview links neben dem Löschen Icon. Wenn Ludusavi den Ordner gefunden hat wirst du zum **Backup Mode** Tab gewechselt und der Ordner wird als Custom Ordner angezeigt. Falls das nicht der Fall ist stelle sicher, dass sich in dem Ordner der Blueprints mindestens eine Datei befindet.
+Um eine bessere Übersicht zu haben kann man den Filter aktivieren und nach **Custom games** filtern. Wenn nur noch der Blueprintordner ausgewählt ist drücke auf **Back up**.
+Stelle sicher, dass der Backupordner an folgendem Ort ist:
+`C:/Users/User/ludusavi-backup`
+Wenn das der Fall ist drücke **Continue**.
 
 
 ## Einrichtung BlueprintSync
