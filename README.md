@@ -165,8 +165,8 @@ Backup_Ordner=C:\Users\<Name>\ludusavi-backup
 AnzahlBlueprints=2
 Blueprint1=Weltname
 Ludusavi_Backup1=Weltname Blueprints
-Blueprint2=Weltname
-Ludusavi_Backup2=Weltname
+Blueprint2=Weltname2
+Ludusavi_Backup2=Weltname2 Blueprints
 ```
 
 | Schlüssel | Bedeutung |
