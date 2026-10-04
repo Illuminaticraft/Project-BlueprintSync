@@ -21,7 +21,6 @@ Beide Skripte haben eine grafische Oberfläche im Dark Mode. Es muss nichts zus�
 |---|---|
 | `InstallAndRepair.bat` | Einrichtung und Reparatur: Programme finden, Welten wählen, Konfiguration schreiben, Sync-Skript installieren |
 | `SatisfactoryBlueprintSync.bat` | Der eigentliche Sync, wird von Steam beim Spielstart ausgeführt |
-| `beispiel.txt` | Beispiel für die erzeugte Konfigurationsdatei `BPSconfig.ini` |
 
 ---
 
@@ -29,7 +28,7 @@ Beide Skripte haben eine grafische Oberfläche im Dark Mode. Es muss nichts zus�
 
 - Windows 10 oder 11
 - Satisfactory über **Steam**
-- **SaveSync** und [**Ludusavi**](https://github.com/mtkennerly/ludusavi). Beide `.exe`-Dateien sollten im selben Ordner oder in dessen Unterordnern liegen, z.B. `D:\SteamLibrary\steamapps\common\SaveSync\`.
+- **SaveSync** mit [**Ludusavi**](https://github.com/mtkennerly/ludusavi). Beide `.exe`-Dateien sollten im selben Ordner oder in dessen Unterordnern liegen, z.B. `D:\SteamLibrary\steamapps\common\SaveSync\`.
 - **Ludusavi** ist so eingerichtet, dass es für jede Welt ein eigenes Blueprint-Backup gibt, z.B. `Weltname Blueprints`, und dass Ludusavi dieses Backup unter genau diesem Namen wiederherstellen und sichern kann.
 - **SaveSync** synchronisiert den Ludusavi-Backup-Ordner zwischen euch.
 
@@ -62,14 +61,14 @@ Alle Backups, die einen Ordner `...\SaveGames\blueprints\<Welt>` enthalten, werd
 
 Öffne SaveSync und wähle Ludusavi aus. Drücke den Knopf spielen, sodass sich Ludusavi öffnet.
 
-Klicke oben auf **OTHER** und scrolle nach unten zu **Redirects:**.
+Klicke oben auf **OTHER** und scrolle nach unten zu **Redirects**.
 
 Stelle sicher, dass **Reverse sequence of redirects when restoring** aus ist.
 
 Füge über das blaue Plus einen Redirect hinzu. Stelle den Modus auf **Bidirectional** ein.
 
 Gib bei **Source (original location)** deinen Pfad zum Ordner `FactoryGame` ein. Diesen findest du unter `%LOCALAPPDATA%`. Z. B.:
-`C:\Users\User\AppData\Local\FactoryGame\`
+`C:\Users\<Name>\AppData\Local\FactoryGame\`
 
 Gib bei **Target (new location)** den folgenden Pfad ein:
 `C:\Users\Admin\AppData\Local\FactoryGame\`
@@ -103,10 +102,12 @@ Gehe dann wieder in Ludusavi rein und klicke auf **Custom Games**.
 
 Klicke hier auf **Add game**.
 
-Drücke unter Paths auf das **blaue Plus**. Wähle den Blueprintordner der Welt entweder über das Ordnersymbol aus oder gib den Pfad manuell ein. Z. B.: `C:\Users\User\AppData\Local\FactoryGame\Saved\SaveGames\blueprints\Blueprintordner der Welt`
+Drücke unter Paths auf das **blaue Plus**. Wähle den Blueprintordner der Welt entweder über das Ordnersymbol aus oder gib den Pfad manuell ein, Z. B.: `C:\Users\<Name>\AppData\Local\FactoryGame\Saved\SaveGames\blueprints\Blueprintordner der Welt`
 
 
-Als Name gibst du den Namen des Blueprintordners ein gefolgt von "Blueprints". Z. B.: "Blueprintordner der Welt Blueprints"
+Als Name gibst du den Namen des Blueprintordners ein gefolgt von "Blueprints". Z. B.: 
+
+"Blueprintordner der Welt Blueprints"
 
 
 Klicke nun auf Preview links neben dem Löschen Icon. Wenn Ludusavi den Ordner gefunden hat wirst du zum **Backup Mode** Tab gewechselt und der Ordner wird als Custom Ordner angezeigt. Falls das nicht der Fall ist stelle sicher, dass sich in dem Ordner der Blueprints mindestens eine Datei befindet.
@@ -119,6 +120,9 @@ Stelle sicher, dass der Backupordner an folgendem Ort ist:
 
 Wenn das der Fall ist drücke **Continue**.
 
+Wechsle jetzt nochmal in den **Restore Mode**.
+
+Klicke dort auf **Restore** und **Continue**.
 
 ## Einrichtung BlueprintSync
 
