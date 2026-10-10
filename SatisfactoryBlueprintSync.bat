@@ -30,6 +30,9 @@ Add-Type -Name Win -Namespace BPS -MemberDefinition @'
 $ConfigPath    = Join-Path $env:LOCALAPPDATA 'FactoryGame\BlueprintSync\BPSconfig.ini'
 $BlueprintRoot = Join-Path $env:LOCALAPPDATA 'FactoryGame\Saved\SaveGames\Blueprints'
 
+# Deutsche Anfuehrungszeichen als [char]: PowerShell wuerde „ “ ” im Quelltext als String-Ende werten
+$LQ = [char]0x201E; $RQ = [char]0x201C
+
 $State = @{ Abort = $false; Skip = $false; NoSync = $false; Done = $false; HadError = $false; GameStarted = $false }
 
 # ============================================================ Design
@@ -402,7 +405,7 @@ try {
     $step = 'done'
     $n = 0
     foreach ($w in $Worlds) {
-        Set-Status "Stelle Blueprints für „$($w.Name)“ wieder her …"
+        Set-Status "Stelle Blueprints für $LQ$($w.Name)$RQ wieder her …"
         Set-Progress ($n++ / [Math]::Max(1, $Worlds.Count))
         $dir = Join-Path $BlueprintRoot $w.Name
         if (Test-Path -LiteralPath $dir) {
@@ -443,7 +446,7 @@ try {
     }
     $n = 0
     foreach ($w in $Worlds) {
-        Set-Status "Erstelle Backup für „$($w.Name)“ …"
+        Set-Status "Erstelle Backup für $LQ$($w.Name)$RQ …"
         Set-Progress ($n++ / [Math]::Max(1, $Worlds.Count))
         $code = Invoke-Ludusavi 'backup' $w.Backup
         if ($code -ne 0) { Write-Log "Backup fehlgeschlagen (Code $code): $($w.Backup)"; $step = 'error'; $State.HadError = $true }
