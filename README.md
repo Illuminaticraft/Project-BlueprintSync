@@ -68,10 +68,10 @@ Stelle sicher, dass **Reverse sequence of redirects when restoring** aus ist.
 Füge über das blaue Plus einen Redirect hinzu. Stelle den Modus auf **Bidirectional** ein.
 
 Gib bei **Source (original location)** deinen Pfad zum Ordner `FactoryGame` ein. Diesen findest du unter `%LOCALAPPDATA%`. Z. B.:
-`C:\Users\<Name>\AppData\Local\FactoryGame\`
+`C:\Users\<Name>\AppData\Local\FactoryGame`
 
 Gib bei **Target (new location)** den folgenden Pfad ein:
-`C:\Users\Admin\AppData\Local\FactoryGame\`
+`C:\Users\User\AppData\Local\FactoryGame`
 
 
 ### 2. Wenn du der Erste bist, der die Blueprints synct, folge diesen Anweisungen:
@@ -113,7 +113,7 @@ Als Name gibst du den Namen des Blueprintordners ein gefolgt von "Blueprints". Z
 Klicke nun auf Preview links neben dem Löschen Icon. Wenn Ludusavi den Ordner gefunden hat wirst du zum **Backup Mode** Tab gewechselt und der Ordner wird als Custom Ordner angezeigt. Falls das nicht der Fall ist stelle sicher, dass sich in dem Ordner der Blueprints mindestens eine Datei befindet.
 
 Um eine bessere Übersicht zu haben kann man den Filter aktivieren und nach **Custom games** filtern. Wenn nur noch der Blueprintordner ausgewählt ist drücke auf **Back up**.
-
+**Vorsicht**: Du kannst gefragt werden, ob du ein Preview machen willst. Dabei werden alle Speicherstände von allen installierten Spielen durchsucht. Bei machen Spielen mit großen Speicherständen kann dann sehr lange dauern. Die Preview kann übersprungen werden.
 Stelle sicher, dass der Backupordner an folgendem Ort ist:
 
 `C:/Users/User/ludusavi-backup`
