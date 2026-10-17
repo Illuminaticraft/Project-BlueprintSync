@@ -107,7 +107,8 @@ Drücke unter Paths auf das **blaue Plus**. Wähle den Blueprintordner der Welt 
 
 Als Name gibst du den Namen des Blueprintordners ein gefolgt von "Blueprints". Z. B.: 
 
-"<<Blueprintordner der Welt>> Blueprints"
+Wenn der Ordner für die Blueprints "FICSIT" heißt ist der Name in Ludusavi:
+"FICSIT Blueprints"
 
 
 Klicke nun auf Preview links neben dem Löschen Icon. Wenn Ludusavi den Ordner gefunden hat wirst du zum **Backup Mode** Tab gewechselt und der Ordner wird als Custom Ordner angezeigt. Falls das nicht der Fall ist stelle sicher, dass sich in dem Ordner der Blueprints mindestens eine Datei befindet.
@@ -141,6 +142,9 @@ Wähle den Ordner, in dem `SaveSync.exe` und `ludusavi.exe` liegen. Dafür gibt 
 - **Durchsuchen…** öffnet die Ordnerauswahl.
 - **Strg+V** fügt einen kopierten Pfad ein, auch mit Anführungszeichen. Ein im Explorer kopierter Ordner funktioniert ebenfalls.
 - Den Pfad direkt ins Feld tippen.
+
+`SaveSync.exe` und `ludusavi.exe` sind durch Steam installiert. Wenn du dir nicht sicher bist, wo diese liegen öffne Steam, gehe auf SaveSync. Gehe dort auf das Zahnrad und gehe zu **verwalten** > **lokale Dateien durchsuchen** 
+In diesem Ordner sollten `SaveSync.exe` und `ludusavi.exe`liegen.
 
 Unterordner werden automatisch durchsucht. Ein grünes ✔ zeigt, dass das Programm gefunden wurde. Ein rotes ✖ bedeutet, dass es in diesem Ordner nicht liegt.
 
