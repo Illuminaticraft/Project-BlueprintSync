@@ -124,6 +124,8 @@ Wechsle jetzt nochmal in den **Restore Mode**.
 
 Klicke dort auf **Restore** und **Continue**.
 
+Ludusavi kann jetzt geschlossen werden. Gehe wieder in SaveSync rein und klicke bei dem geteilten Ludusavi-Backup auf **Aktivieren**.
+
 ## Einrichtung BlueprintSync
 
 ### 1. Installer starten
