@@ -71,7 +71,7 @@ Gib bei **Source (original location)** deinen Pfad zum Ordner `FactoryGame` ein.
 `C:\Users\<Name>\AppData\Local\FactoryGame`
 
 Gib bei **Target (new location)** den folgenden Pfad ein:
-`C:\Users\User\AppData\Local\FactoryGame`
+`C:\Users\Admin\AppData\Local\FactoryGame`
 
 
 ### 2. Wenn du der Erste bist, der die Blueprints synct, folge diesen Anweisungen:
