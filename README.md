@@ -107,7 +107,7 @@ Drücke unter Paths auf das **blaue Plus**. Wähle den Blueprintordner der Welt 
 
 Als Name gibst du den Namen des Blueprintordners ein gefolgt von "Blueprints". Z. B.: 
 
-"Blueprintordner der Welt Blueprints"
+"<<Blueprintordner der Welt>> Blueprints"
 
 
 Klicke nun auf Preview links neben dem Löschen Icon. Wenn Ludusavi den Ordner gefunden hat wirst du zum **Backup Mode** Tab gewechselt und der Ordner wird als Custom Ordner angezeigt. Falls das nicht der Fall ist stelle sicher, dass sich in dem Ordner der Blueprints mindestens eine Datei befindet.
