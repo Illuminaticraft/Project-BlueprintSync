@@ -19,7 +19,7 @@ Beide Skripte haben eine grafische Oberfläche im Dark Mode. Es muss nichts zus�
 
 | Datei | Zweck |
 |---|---|
-| `InstallAndRepair.bat` | Einrichtung und Reparatur: Programme finden, Welten wählen, Konfiguration schreiben, Sync-Skript installieren |
+| `InstallAndRepair.bat` | Einrichtung, Reparatur und Update: Programme finden, Welten wählen, Konfiguration schreiben, Sync-Skript installieren und aktualisieren |
 | `SatisfactoryBlueprintSync.bat` | Der eigentliche Sync, wird von Steam beim Spielstart ausgeführt |
 
 ---
@@ -68,10 +68,10 @@ Stelle sicher, dass **Reverse sequence of redirects when restoring** aus ist.
 Füge über das blaue Plus einen Redirect hinzu. Stelle den Modus auf **Bidirectional** ein.
 
 Gib bei **Source (original location)** deinen Pfad zum Ordner `FactoryGame` ein. Diesen findest du unter `%LOCALAPPDATA%`. Z. B.:
-`C:\Users\<Name>\AppData\Local\FactoryGame\`
+`C:\Users\<Name>\AppData\Local\FactoryGame`
 
 Gib bei **Target (new location)** den folgenden Pfad ein:
-`C:\Users\Admin\AppData\Local\FactoryGame\`
+`C:\Users\User\AppData\Local\FactoryGame`
 
 
 ### 2. Wenn du der Erste bist, der die Blueprints synct, folge diesen Anweisungen:
@@ -113,7 +113,7 @@ Als Name gibst du den Namen des Blueprintordners ein gefolgt von "Blueprints". Z
 Klicke nun auf Preview links neben dem Löschen Icon. Wenn Ludusavi den Ordner gefunden hat wirst du zum **Backup Mode** Tab gewechselt und der Ordner wird als Custom Ordner angezeigt. Falls das nicht der Fall ist stelle sicher, dass sich in dem Ordner der Blueprints mindestens eine Datei befindet.
 
 Um eine bessere Übersicht zu haben kann man den Filter aktivieren und nach **Custom games** filtern. Wenn nur noch der Blueprintordner ausgewählt ist drücke auf **Back up**.
-
+**Vorsicht**: Du kannst gefragt werden, ob du ein Preview machen willst. Dabei werden alle Speicherstände von allen installierten Spielen durchsucht. Bei machen Spielen mit großen Speicherständen kann dann sehr lange dauern. Die Preview kann übersprungen werden.
 Stelle sicher, dass der Backupordner an folgendem Ort ist:
 
 `C:/Users/User/ludusavi-backup`
@@ -123,6 +123,8 @@ Wenn das der Fall ist drücke **Continue**.
 Wechsle jetzt nochmal in den **Restore Mode**.
 
 Klicke dort auf **Restore** und **Continue**.
+
+Ludusavi kann jetzt geschlossen werden. Gehe wieder in SaveSync rein und klicke bei dem geteilten Ludusavi-Backup auf **Aktivieren**.
 
 ## Einrichtung BlueprintSync
 
@@ -214,7 +216,43 @@ Führe `InstallAndRepair.bat` einfach erneut aus:
 - Setze oder entferne Häkchen, um Welten hinzuzufügen oder zu entfernen.
 - Mit **Speichern** werden die Konfiguration und das Sync-Skript in `%LOCALAPPDATA%\FactoryGame\BlueprintSync` neu geschrieben.
 
-So kommt auch eine **neue Version** von `SatisfactoryBlueprintSync.bat` zu allen: neue Dateien ins Backup legen, und jeder führt einmal den Installer aus.
+Liegt im Backup eine neue Version des Sync-Skripts, aktualisiert der Installer sie beim Start automatisch, siehe [Updates](#updates).
+
+---
+
+## Updates
+
+Das Sync-Skript wird **nicht** beim Spielstart aktualisiert, sondern jedes Mal, wenn `InstallAndRepair.bat` ausgeführt wird. Der Installer erkennt dabei selbst, ob das Skript in `%LOCALAPPDATA%` veraltet ist. Ein Klick auf **Speichern** ist dafür nicht nötig.
+
+### So funktioniert der Updater
+
+Beim Start prüft `InstallAndRepair.bat`, noch bevor das Fenster erscheint:
+
+1. Gibt es die Datei `%LOCALAPPDATA%\FactoryGame\BlueprintSync\BPSconfig.ini`? Wenn nicht, ist es eine Erstinstallation, und es wird kein Update durchgeführt.
+2. Wenn ja, wird der Eintrag `Version=` in der `.ini` mit der Version des Installers verglichen. Die Version des Installers steht in der Variable `$Version` am Anfang von `InstallAndRepair.bat`.
+3. Sind beide gleich, passiert nichts.
+4. Sind sie unterschiedlich, wird die alte `SatisfactoryBlueprintSync.bat` in `%LOCALAPPDATA%\FactoryGame\BlueprintSync` gelöscht und die neue aus dem Ordner des Installers (dem Ludusavi-Backup) dorthin kopiert.
+5. Danach wird in der `.ini` die Zeile `Version=` auf die Version des Installers gesetzt. Alle anderen Einstellungen (Programmpfade, Welten) bleiben unverändert.
+
+Anschließend zeigt der Installer einen Hinweis mit der alten und der neuen Version an. Die Steam-Startoption muss nicht angepasst werden, weil der Pfad des Skripts gleich bleibt.
+
+Die Version wird nur auf **Abweichung** geprüft, nicht darauf, ob sie „neuer“ ist. Das Format ist frei wählbar, z.B. `1.1`, `2.0` oder `1.0.3`.
+
+### Neue Version verteilen
+
+1. Die neue `SatisfactoryBlueprintSync.bat` in den Blueprint-Ordner der Welt legen, wie bei der Einrichtung, und die alte Datei ersetzen.
+2. `InstallAndRepair.bat` mit einem Texteditor öffnen und oben die Zeile `$Version = '1.0'` auf eine neue Version ändern, z.B. `$Version = '1.1'`. Ohne diese Änderung merkt der Installer nicht, dass es eine neue Version gibt.
+3. In Ludusavi ein neues Backup der Welt erstellen. SaveSync verteilt es dann an die anderen.
+4. Sobald das neue Backup bei den anderen angekommen ist, führt jeder einmal `InstallAndRepair.bat` aus dem Ludusavi-Backup aus. Das Update läuft dabei automatisch.
+
+Wer das Update verteilt, führt den Installer am besten selbst auch einmal aus, damit die eigene Installation ebenfalls auf der neuen Version ist.
+
+### Sonderfälle
+
+- **Die neue `SatisfactoryBlueprintSync.bat` liegt nicht neben dem Installer:** Es wird nichts gelöscht, und die Version in der `.ini` bleibt unverändert. Der Installer zeigt eine Fehlermeldung, und beim nächsten Start wird das Update erneut versucht.
+- **Löschen oder Kopieren schlägt fehl**, z.B. weil die Datei gerade benutzt wird: Es erscheint eine Fehlermeldung, die Version bleibt unverändert, und das Update wird beim nächsten Start erneut versucht. Schließe dann das Sync-Fenster und führe den Installer noch einmal aus.
+- **Eine ältere `.ini` ohne Versionseintrag** gilt als abweichend. Sie wird aktualisiert, und der Eintrag wird ergänzt.
+- **Der Installer liegt selbst im Ordner `%LOCALAPPDATA%\FactoryGame\BlueprintSync`:** Es wird nicht aktualisiert, weil er sonst seine eigene Quelle löschen würde. Starte ihn immer aus dem Ludusavi-Backup.
 
 ---
 
@@ -239,6 +277,7 @@ Ludusavi_Backup2=Weltname2 Blueprints
 
 | Schlüssel | Bedeutung |
 |---|---|
+| `Version` | Version des Installers, mit dem die Konfiguration zuletzt geschrieben oder aktualisiert wurde. Der Updater vergleicht sie beim Start mit `$Version` in `InstallAndRepair.bat` |
 | `Datei_Sync` | Pfad zu `SaveSync.exe` |
 | `Datei_Ludosavi` | Pfad zu `ludusavi.exe` |
 | `Backup_Ordner` | Ludusavi-Backup-Ordner, wird genutzt, wenn der Installer nicht im Backup liegt |
@@ -259,7 +298,8 @@ Die Datei wird vom Installer geschrieben und muss normalerweise nicht von Hand b
 | ✖ bei SaveSync.exe oder ludusavi.exe | Einen Ordner wählen, der die `.exe` enthält, gern auch einen übergeordneten Ordner |
 | „Restore/Backup fehlgeschlagen (Code …)“ | Im Protokoll steht die Ausgabe von Ludusavi. Meist ist der Backup-Name in Ludusavi nicht bekannt, oder Ludusavi nutzt einen anderen Backup-Ordner |
 | Das Sync-Fenster erscheint beim Spielstart nicht | Die Steam-Startoption prüfen: Pfad in Anführungszeichen und am Ende `%command%` |
-| Neue Version wird nicht benutzt | `InstallAndRepair.bat` aus dem Backup erneut ausführen und **Speichern**, erst dann wird das Skript nach `%LOCALAPPDATA%` kopiert |
+| Neue Version wird nicht benutzt | `InstallAndRepair.bat` aus dem Ludusavi-Backup erneut ausführen. Prüfen, ob in dieser Datei `$Version` erhöht wurde und die neue `SatisfactoryBlueprintSync.bat` im selben Ordner liegt, siehe [Updates](#updates) |
+| „Update fehlgeschlagen“ beim Start des Installers | Die Meldung nennt den Grund. Meist fehlt die `SatisfactoryBlueprintSync.bat` neben dem Installer, oder die Datei ist in Benutzung (Sync-Fenster schließen). Den Installer danach erneut ausführen, das Update wird wiederholt |
 
 ---
 

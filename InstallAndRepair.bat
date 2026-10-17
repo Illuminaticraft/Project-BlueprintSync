@@ -13,6 +13,14 @@ exit /b %errorlevel%
 #  ...\ludusavi-backup\<Backup>\drive-C\...\SaveGames\blueprints\<Welt>
 # ===================================================================
 
+# -------------------------------------------------------------------
+#  VERSION dieses Installers
+#  Bei jeder Aenderung an SatisfactoryBlueprintSync.bat hier von Hand
+#  hochzaehlen. Weicht sie von der Version in der BPSconfig.ini ab, wird
+#  das Sync-Skript beim Start automatisch aktualisiert (siehe Updater).
+# -------------------------------------------------------------------
+$Version = '1.0'
+
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms, System.Drawing
 [Windows.Forms.Application]::EnableVisualStyles()
@@ -197,6 +205,53 @@ $cfg = Read-Config
 $Configured = @(for ($i = 1; $i -le [int]$cfg.AnzahlBlueprints; $i++) {
     "$($cfg["Blueprint$i"])|$($cfg["Ludusavi_Backup$i"])"
 })
+
+# ============================================================ Updater
+# Setzt die Version in der BPSconfig.ini, ohne den Rest der Datei zu veraendern
+function Set-ConfigVersion([string]$NewVersion) {
+    $lines = New-Object 'System.Collections.Generic.List[string]'
+    $lines.AddRange([string[]]@([IO.File]::ReadAllLines($ConfigPath)))
+    $keyIdx = -1; $hdrIdx = -1
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        if ($keyIdx -lt 0 -and $lines[$i] -match '^\s*Version\s*=') { $keyIdx = $i }
+        if ($hdrIdx -lt 0 -and $lines[$i] -match '^\s*\[Version\]\s*$') { $hdrIdx = $i }
+    }
+    if     ($keyIdx -ge 0) { $lines[$keyIdx] = "Version=$NewVersion" }
+    elseif ($hdrIdx -ge 0) { $lines.Insert($hdrIdx + 1, "Version=$NewVersion") }
+    else {
+        # Aeltere Konfiguration ohne Versionseintrag: Abschnitt am Anfang ergaenzen
+        $lines.Insert(0, "Version=$NewVersion")
+        $lines.Insert(0, '[Version]')
+    }
+    [IO.File]::WriteAllLines($ConfigPath, $lines.ToArray())
+}
+
+# Gibt es schon eine Konfiguration und weicht ihre Version von $Version ab, wird das
+# Sync-Skript in %LOCALAPPDATA% geloescht und die neue Datei aus dem Backup kopiert.
+# Danach wird die Version in der Konfiguration angepasst.
+# Rueckgabe: $null (nichts zu tun) oder ein Ergebnis fuer den Hinweis-Dialog.
+function Update-SyncScript([string]$OldVersion) {
+    if (-not (Test-Path -LiteralPath $ConfigPath)) { return $null }   # Erstinstallation
+    if ($OldVersion -eq $Version) { return $null }                    # bereits aktuell
+    if ($SyncSource -eq $SyncTarget) { return $null }                 # Installer liegt selbst im Zielordner
+    $shownOld = if ($OldVersion) { $OldVersion } else { 'unbekannt' }
+    try {
+        # Erst pruefen, ob die neue Datei da ist - sonst wuerde die alte umsonst geloescht
+        if (-not (Test-Path -LiteralPath $SyncSource -PathType Leaf)) {
+            throw "SatisfactoryBlueprintSync.bat wurde nicht im Ordner des Installers gefunden:`n$ScriptDir"
+        }
+        if (Test-Path -LiteralPath $SyncTarget) { Remove-Item -LiteralPath $SyncTarget -Force }
+        Copy-Item -LiteralPath $SyncSource -Destination $SyncTarget -Force
+        Set-ConfigVersion $Version
+        @{ Kind = 'success'; Title = 'Update'
+           Message = "Das Sync-Skript wurde aktualisiert (Version $shownOld → $Version).`n`nDie neue SatisfactoryBlueprintSync.bat wurde aus dem Backup nach`n$ConfigDir`nkopiert." }
+    } catch {
+        @{ Kind = 'error'; Title = 'Update fehlgeschlagen'
+           Message = "Das Sync-Skript (Version $shownOld → $Version) konnte nicht aktualisiert werden:`n`n$($_.Exception.Message)`n`nBitte InstallAndRepair.bat erneut ausführen." }
+    }
+}
+
+$UpdateResult = Update-SyncScript ([string]$cfg.Version)
 
 # ================================================================ UI
 $form = New-DarkForm 'Satisfactory Blueprint Sync – Einrichtung' 620 700
@@ -386,7 +441,7 @@ $btnSave.add_Click({
     $sel = @($State.Rows | Where-Object { $_.Check.Checked })
     $lines = @(
         '[Version]'
-        'Version=1.0'
+        "Version=$Version"
         '[Paths]'
         "Datei_Sync=$($State.SyncExe)"
         "Datei_Ludosavi=$($State.LuduExe)"
@@ -438,6 +493,9 @@ $form.add_Shown({
     Load-Backups $root
     [void][BPS.Win]::SetWindowTheme($lstWorlds.Handle, 'DarkMode_Explorer', $null)
     $btnBrowse.Focus()
+    if ($UpdateResult) {
+        Show-Dialog $form $UpdateResult.Title $UpdateResult.Message @('OK') $UpdateResult.Kind | Out-Null
+    }
 })
 
 [void]$form.ShowDialog()
