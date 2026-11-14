@@ -23,9 +23,13 @@ Add-Type -Name Win -Namespace BPS -MemberDefinition @'
 [DllImport("user32.dll")] public static extern bool AllowSetForegroundWindow(int dwProcessId);
 [DllImport("dwmapi.dll")] public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
 [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)] public static extern int SetWindowTheme(IntPtr hWnd, string app, string idList);
+[DllImport("shell32.dll", CharSet = CharSet.Unicode)] public static extern int SetCurrentProcessExplicitAppUserModelID(string appID);
 '@
 # Konsolenfenster verstecken, nur die Oberflaeche anzeigen
 [BPS.Win]::ShowWindow([BPS.Win]::GetConsoleWindow(), 0) | Out-Null
+# Eigene App-ID: Ohne sie gruppiert Windows das Fenster unter PowerShell und zeigt in der
+# Taskleiste dessen Symbol statt des eigenen. Muss vor dem ersten Fenster gesetzt werden.
+try { [void][BPS.Win]::SetCurrentProcessExplicitAppUserModelID('Illuminaticraft.BlueprintSync') } catch { }
 
 $ConfigPath    = Join-Path $env:LOCALAPPDATA 'FactoryGame\BlueprintSync\BPSconfig.ini'
 $BlueprintRoot = Join-Path $env:LOCALAPPDATA 'FactoryGame\Saved\SaveGames\Blueprints'
