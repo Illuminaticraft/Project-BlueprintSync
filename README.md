@@ -2,6 +2,8 @@
   <img src="docs/banner.png" alt="Satisfactory Blueprint Sync" width="100%">
 </p>
 
+# Satisfactory Blueprint Sync
+
 Automatisiert das Synchronisieren von **Satisfactory-Blueprints** zwischen mehreren Spielern mit **SaveSync** und **Ludusavi**.
 
 Bei jedem Spielstart über Steam passiert automatisch:
@@ -15,12 +17,25 @@ Bei jedem Spielstart über Steam passiert automatisch:
 
 Beide Skripte haben eine grafische Oberfläche im Dark Mode. Es muss nichts zusätzlich installiert werden, denn die Oberfläche nutzt das in Windows enthaltene PowerShell.
 
+<!-- Screenshot einfügen, sobald vorhanden (Datei nach docs/screenshot-sync.png legen), dann die Kommentarzeichen entfernen:
+<p align="center"><img src="docs/screenshot-sync.png" alt="Das Sync-Fenster" width="60%"></p>
+-->
+
+---
+
+## Schnellstart
+
+1. **SaveSync** und **Ludusavi** einrichten, siehe [Einrichtung Ludusavi](#einrichtung-ludusavi).
+2. `InstallAndRepair.bat` aus dem Ludusavi-Backup ausführen und die Welten auswählen, siehe [Einrichtung BlueprintSync](#einrichtung-blueprintsync).
+3. Die vom Installer angezeigte **Startoption** in Steam bei Satisfactory eintragen.
+4. Satisfactory wie gewohnt über Steam starten. Der Rest läuft automatisch.
+
 ---
 
 ## Inhalt
 
 | Datei | Zweck |
-|---|---|
+| --- | --- |
 | `InstallAndRepair.bat` | Einrichtung, Reparatur und Update: Programme finden, Welten wählen, Konfiguration schreiben, Sync-Skript installieren und aktualisieren |
 | `SatisfactoryBlueprintSync.bat` | Der eigentliche Sync, wird von Steam beim Spielstart ausgeführt |
 
@@ -57,7 +72,7 @@ Alle Backups, die einen Ordner `...\SaveGames\blueprints\<Welt>` enthalten, werd
 
 ---
 
-## Einichtung Ludusavi
+## Einrichtung Ludusavi
 
 ### 1. Ludusavi öffnen
 
@@ -69,12 +84,9 @@ Stelle sicher, dass **Reverse sequence of redirects when restoring** aus ist.
 
 Füge über das blaue Plus einen Redirect hinzu. Stelle den Modus auf **Bidirectional** ein.
 
-Gib bei **Source (original location)** deinen Pfad zum Ordner `FactoryGame` ein. Diesen findest du unter `%LOCALAPPDATA%`. Z. B.:
-`C:\Users\<Name>\AppData\Local\FactoryGame`
+Gib bei **Source (original location)** deinen Pfad zum Ordner `FactoryGame` ein. Diesen findest du unter `%LOCALAPPDATA%`. Z. B.: `C:\Users\<Name>\AppData\Local\FactoryGame`
 
-Gib bei **Target (new location)** den folgenden Pfad ein:
-`C:\Users\Admin\AppData\Local\FactoryGame`
-
+Gib bei **Target (new location)** den folgenden Pfad ein: `C:\Users\Admin\AppData\Local\FactoryGame`
 
 ### 2. Wenn du der Erste bist, der die Blueprints synct, folge diesen Anweisungen:
 
@@ -82,12 +94,11 @@ Gib bei **Target (new location)** den folgenden Pfad ein:
 
 `%LOCALAPPDATA%\FactoryGame\Saved\SaveGames\blueprints\`
 
-Der Ordner mit den Blueprints deiner Welt sollte dort liegen. 
+Der Ordner mit den Blueprints deiner Welt sollte dort liegen.
 
-Falls dies nicht der Fall ist gibt es in dieser Welt noch keine Blueprints. Dann muss der Ordner selbst erstellt werden. Der Ordner bekommt dann den Namen der Welt.
+Falls dies nicht der Fall ist, gibt es in dieser Welt noch keine Blueprints. Dann muss der Ordner selbst erstellt werden. Der Ordner bekommt dann den Namen der Welt.
 
-Wenn der Ordner der Blueprints für die Welt existiert füge die Dateien `InstallAndRepair.bat` und `SatisfactoryBlueprintSync.bat` ein.
-
+Wenn der Ordner der Blueprints für die Welt existiert, füge die Dateien `InstallAndRepair.bat` und `SatisfactoryBlueprintSync.bat` ein.
 
 ### 3. Wenn du über Savesync für die Welt eingeladen worden bist, folge diesen Anweisungen:
 
@@ -95,8 +106,7 @@ Wenn der Ordner der Blueprints für die Welt existiert füge die Dateien `Instal
 
 `%LOCALAPPDATA%\FactoryGame\Saved\SaveGames\blueprints\`
 
-Stelle sich, dass es den Ordner der Blueprints für die Welt, die mit dir geteilt wurde, gibt und stelle sicher, dass sich in diesem Ordner mindestens eine Datei befindet. Nur so kann Ludusavi den Ordner finden.
-
+Stelle sicher, dass es den Ordner der Blueprints für die Welt, die mit dir geteilt wurde, gibt, und dass sich in diesem Ordner mindestens eine Datei befindet. Nur so kann Ludusavi den Ordner finden.
 
 ### 4. Blueprintordner in Ludusavi hinzufügen:
 
@@ -104,24 +114,19 @@ Gehe dann wieder in Ludusavi rein und klicke auf **Custom Games**.
 
 Klicke hier auf **Add game**.
 
-Drücke unter Paths auf das **blaue Plus**. Wähle den Blueprintordner der Welt entweder über das Ordnersymbol aus oder gib den Pfad manuell ein, Z. B.: `C:\Users\<Name>\AppData\Local\FactoryGame\Saved\SaveGames\blueprints\Blueprintordner der Welt`
+Drücke unter Paths auf das **blaue Plus**. Wähle den Blueprintordner der Welt entweder über das Ordnersymbol aus oder gib den Pfad manuell ein, z. B.: `C:\Users\<Name>\AppData\Local\FactoryGame\Saved\SaveGames\blueprints\Blueprintordner der Welt`
 
+Als Name gibst du den Namen des Blueprintordners ein, gefolgt von "Blueprints". Z. B.:
 
-Als Name gibst du den Namen des Blueprintordners ein gefolgt von "Blueprints". Z. B.: 
+Wenn der Ordner für die Blueprints "FICSIT" heißt, ist der Name in Ludusavi: "FICSIT Blueprints"
 
-Wenn der Ordner für die Blueprints "FICSIT" heißt ist der Name in Ludusavi:
-"FICSIT Blueprints"
+Klicke nun auf Preview links neben dem Löschen-Icon. Wenn Ludusavi den Ordner gefunden hat, wirst du zum **Backup Mode** Tab gewechselt und der Ordner wird als Custom Ordner angezeigt. Falls das nicht der Fall ist, stelle sicher, dass sich in dem Ordner der Blueprints mindestens eine Datei befindet.
 
-
-Klicke nun auf Preview links neben dem Löschen Icon. Wenn Ludusavi den Ordner gefunden hat wirst du zum **Backup Mode** Tab gewechselt und der Ordner wird als Custom Ordner angezeigt. Falls das nicht der Fall ist stelle sicher, dass sich in dem Ordner der Blueprints mindestens eine Datei befindet.
-
-Um eine bessere Übersicht zu haben kann man den Filter aktivieren und nach **Custom games** filtern. Wenn nur noch der Blueprintordner ausgewählt ist drücke auf **Back up**.
-**Vorsicht**: Du kannst gefragt werden, ob du ein Preview machen willst. Dabei werden alle Speicherstände von allen installierten Spielen durchsucht. Bei machen Spielen mit großen Speicherständen kann dann sehr lange dauern. Die Preview kann übersprungen werden.
-Stelle sicher, dass der Backupordner an folgendem Ort ist:
+Um eine bessere Übersicht zu haben, kann man den Filter aktivieren und nach **Custom games** filtern. Wenn nur noch der Blueprintordner ausgewählt ist, drücke auf **Back up**. **Vorsicht**: Du kannst gefragt werden, ob du ein Preview machen willst. Dabei werden alle Speicherstände von allen installierten Spielen durchsucht. Bei manchen Spielen mit großen Speicherständen kann das sehr lange dauern. Die Preview kann übersprungen werden. Stelle sicher, dass der Backupordner an folgendem Ort ist:
 
 `C:/Users/User/ludusavi-backup`
 
-Wenn das der Fall ist drücke **Continue**.
+Wenn das der Fall ist, drücke **Continue**.
 
 Wechsle jetzt nochmal in den **Restore Mode**.
 
@@ -133,9 +138,7 @@ Ludusavi kann jetzt geschlossen werden. Gehe wieder in SaveSync rein und klicke 
 
 ### 1. Installer starten
 
-Öffne den Blueprint-Ordner im Ludusavi-Backup, z.B.
-`C:\Users\<Name>\ludusavi-backup\Weltname Blueprints\drive-C\...\blueprints\Weltname`,
-und führe **`InstallAndRepair.bat`** per Doppelklick aus.
+Öffne den Blueprint-Ordner im Ludusavi-Backup, z.B. `C:\Users\<Name>\ludusavi-backup\Weltname Blueprints\drive-C\...\blueprints\Weltname`, und führe **`InstallAndRepair.bat`** per Doppelklick aus.
 
 ### 2. Programme
 
@@ -145,8 +148,7 @@ Wähle den Ordner, in dem `SaveSync.exe` und `ludusavi.exe` liegen. Dafür gibt 
 - **Strg+V** fügt einen kopierten Pfad ein, auch mit Anführungszeichen. Ein im Explorer kopierter Ordner funktioniert ebenfalls.
 - Den Pfad direkt ins Feld tippen.
 
-`SaveSync.exe` und `ludusavi.exe` sind durch Steam installiert. Wenn du dir nicht sicher bist, wo diese liegen öffne Steam, gehe auf SaveSync. Gehe dort auf das Zahnrad und gehe zu **verwalten** > **lokale Dateien durchsuchen** 
-In diesem Ordner sollten `SaveSync.exe` und `ludusavi.exe`liegen.
+`SaveSync.exe` und `ludusavi.exe` sind durch Steam installiert. Wenn du dir nicht sicher bist, wo diese liegen, öffne Steam, gehe auf SaveSync. Gehe dort auf das Zahnrad und gehe zu **verwalten** > **lokale Dateien durchsuchen**. In diesem Ordner sollten `SaveSync.exe` und `ludusavi.exe` liegen.
 
 Unterordner werden automatisch durchsucht. Ein grünes ✔ zeigt, dass das Programm gefunden wurde. Ein rotes ✖ bedeutet, dass es in diesem Ordner nicht liegt.
 
@@ -184,7 +186,7 @@ Die genaue Zeile zeigt der Installer im Bereich **3 Steam-Startoption** an. Übe
 Starte Satisfactory wie gewohnt über Steam. Das Blueprint-Sync-Fenster öffnet sich und arbeitet die Schritte ab:
 
 | Schritt | Was passiert |
-|---|---|
+| --- | --- |
 | Steam starten | Läuft Steam nicht, wird es **minimiert** gestartet (`-silent`) |
 | SaveSync starten | SaveSync wird gestartet bzw. in den Vordergrund geholt |
 | Syncs überprüfen | 60 Sekunden Zeit, um in SaveSync zu prüfen, ob alles aktuell ist. Mit **Weiter** geht es sofort weiter |
@@ -198,7 +200,7 @@ Im Protokoll unten im Fenster siehst du, was passiert ist, inklusive der Ausgabe
 
 ### Ohne Sync spielen (z.B. Singleplayer)
 
-Der Knopf **Ohne Sync spielen** ist jederzeit anklickbar. Er startet Satisfactory sofort, **ohne** Blueprints wiederherzustellen oder zu sichern. Das Programm schließt sich, sobald das Spiel läuft. Läuft das Spiel bereits, wirst du vorher gefragt, weil dann kein Backup mehr erstellt wird.
+Der Knopf **Ohne Sync spielen** ist jederzeit anklickbar. Er beendet SaveSync vollständig und startet Satisfactory sofort, **ohne** Blueprints wiederherzustellen oder zu sichern. Das Programm schließt sich, sobald das Spiel läuft. Läuft das Spiel bereits, wirst du vorher gefragt, weil dann kein Backup mehr erstellt wird.
 
 ### Direkt starten (ohne Steam)
 
@@ -242,12 +244,12 @@ Beim Start prüft `InstallAndRepair.bat`, noch bevor das Fenster erscheint:
 
 Anschließend zeigt der Installer einen Hinweis mit der alten und der neuen Version an. Die Steam-Startoption muss nicht angepasst werden, weil der Pfad des Skripts gleich bleibt.
 
-Die Version wird nur auf **Abweichung** geprüft, nicht darauf, ob sie „neuer“ ist. Das Format ist frei wählbar, z.B. `1.1`, `2.0` oder `1.0.3`.
+Die Version wird nur auf **Abweichung** geprüft, nicht darauf, ob sie „neuer“ ist. Das Format ist frei wählbar, z.B. `1.1`, `2.0` oder `1.0.3`. Was sich in welcher Version geändert hat, steht im [Changelog](CHANGELOG.md).
 
 ### Neue Version verteilen
 
 1. Die neue `SatisfactoryBlueprintSync.bat` in den Blueprint-Ordner der Welt legen, wie bei der Einrichtung, und die alte Datei ersetzen.
-2. `InstallAndRepair.bat` mit einem Texteditor öffnen und oben die Zeile `$Version = '1.0'` auf eine neue Version ändern, z.B. `$Version = '1.1'`. Ohne diese Änderung merkt der Installer nicht, dass es eine neue Version gibt.
+2. `InstallAndRepair.bat` mit einem Texteditor öffnen und oben die Zeile `$Version = '1.1'` auf eine neue Version ändern, z.B. `$Version = '1.2'`. Ohne diese Änderung merkt der Installer nicht, dass es eine neue Version gibt.
 3. In Ludusavi ein neues Backup der Welt erstellen. SaveSync verteilt es dann an die anderen.
 4. Sobald das neue Backup bei den anderen angekommen ist, führt jeder einmal `InstallAndRepair.bat` aus dem Ludusavi-Backup aus. Das Update läuft dabei automatisch.
 
@@ -266,9 +268,9 @@ Wer das Update verteilt, führt den Installer am besten selbst auch einmal aus, 
 
 Gespeichert unter `%LOCALAPPDATA%\FactoryGame\BlueprintSync\BPSconfig.ini`:
 
-```ini
+```
 [Version]
-Version=1.0
+Version=1.1
 [Paths]
 Datei_Sync=D:\SteamLibrary\steamapps\common\SaveSync\SaveSync.exe
 Datei_Ludosavi=D:\SteamLibrary\steamapps\common\SaveSync\ludusavi.exe
@@ -282,10 +284,10 @@ Ludusavi_Backup2=Weltname2 Blueprints
 ```
 
 | Schlüssel | Bedeutung |
-|---|---|
+| --- | --- |
 | `Version` | Version des Installers, mit dem die Konfiguration zuletzt geschrieben oder aktualisiert wurde. Der Updater vergleicht sie beim Start mit `$Version` in `InstallAndRepair.bat` |
 | `Datei_Sync` | Pfad zu `SaveSync.exe` |
-| `Datei_Ludosavi` | Pfad zu `ludusavi.exe` |
+| `Datei_Ludosavi` | Pfad zu `ludusavi.exe` (der Schlüsselname ist bewusst so geschrieben, damit bestehende Konfigurationen weiter funktionieren) |
 | `Backup_Ordner` | Ludusavi-Backup-Ordner, wird genutzt, wenn der Installer nicht im Backup liegt |
 | `AnzahlBlueprints` | Anzahl der synchronisierten Welten |
 | `Blueprint<N>` | Name des Welt-Ordners unter `%LOCALAPPDATA%\FactoryGame\Saved\SaveGames\Blueprints\` |
@@ -298,7 +300,7 @@ Die Datei wird vom Installer geschrieben und muss normalerweise nicht von Hand b
 ## Fehlerbehebung
 
 | Problem | Lösung |
-|---|---|
+| --- | --- |
 | „Es wurde keine Konfiguration gefunden“ | `InstallAndRepair.bat` aus dem Ludusavi-Backup-Ordner ausführen. Satisfactory startet in dem Fall trotzdem, aber ohne Sync |
 | Unter „Welten“ steht nichts | Prüfen, ob der Installer wirklich im Ludusavi-Backup liegt, oder den Backup-Ordner über **Ordner ändern…** wählen |
 | ✖ bei SaveSync.exe oder ludusavi.exe | Einen Ordner wählen, der die `.exe` enthält, gern auch einen übergeordneten Ordner |
@@ -313,5 +315,12 @@ Die Datei wird vom Installer geschrieben und muss normalerweise nicht von Hand b
 
 - Beide `.bat`-Dateien sind **Batch/PowerShell-Hybride**. Der kurze Batch-Teil am Anfang startet PowerShell, das den Rest derselben Datei als Skript ausführt. Dadurch bleibt es bei einer einzigen Datei pro Skript. Die Oberfläche ist mit Windows Forms gebaut.
 - Das Konsolenfenster wird nach dem Start ausgeblendet, sichtbar ist nur die Oberfläche.
+- Das Programm-Symbol ist als Base64 in den Skripten eingebettet, es müssen also keine weiteren Dateien mitverteilt werden. Die Logo-Dateien liegen im Ordner [`docs`](docs).
 - Laufende Spiele werden an Prozessen erkannt, deren Name mit `FactoryGame` beginnt.
 - Es läuft immer nur eine Instanz des Sync-Skripts. Dafür sorgt ein benannter Mutex, und benannte Events dienen zur Abstimmung mit der von Steam gestarteten zweiten Instanz.
+
+---
+
+## Lizenz
+
+Dieses Projekt steht unter der [MIT-Lizenz](LICENSE).
