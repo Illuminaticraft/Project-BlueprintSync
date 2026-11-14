@@ -1,0 +1,5 @@
+# Die .bat-Dateien muessen Windows-Zeilenenden (CRLF) behalten, auch nach Download oder Clone
+*.bat text eol=crlf
+*.md text eol=lf
+*.png binary
+*.ico binary
