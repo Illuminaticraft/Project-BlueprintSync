@@ -1,4 +1,6 @@
-# Satisfactory Blueprint Sync
+<p align="center">
+  <img src="docs/banner.png" alt="Satisfactory Blueprint Sync" width="100%">
+</p>
 
 Automatisiert das Synchronisieren von **Satisfactory-Blueprints** zwischen mehreren Spielern mit **SaveSync** und **Ludusavi**.
 
