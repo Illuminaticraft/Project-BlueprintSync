@@ -529,6 +529,25 @@ function Start-SaveSync {
     $true
 }
 
+# Beendet SaveSync vollstaendig (samt Unterprozessen): erst freundlich schliessen,
+# nach 3 Sekunden hart beenden, falls es sich nur in den Infobereich minimiert hat.
+function Stop-SaveSync {
+    if (-not (Test-SaveSync)) { return }
+    Write-Log 'SaveSync wird beendet …'
+    foreach ($p in @(Get-Process -Name 'SaveSync' -ErrorAction SilentlyContinue)) {
+        try { [void]$p.CloseMainWindow() } catch { }
+    }
+    $end = (Get-Date).AddSeconds(3)
+    while ((Test-SaveSync) -and (Get-Date) -lt $end) {
+        [Windows.Forms.Application]::DoEvents()
+        Start-Sleep -Milliseconds 100
+    }
+    foreach ($p in @(Get-Process -Name 'SaveSync' -ErrorAction SilentlyContinue)) {
+        Start-Process -FilePath 'taskkill.exe' -ArgumentList @('/PID', "$($p.Id)", '/T', '/F') -WindowStyle Hidden -Wait
+    }
+    Write-Log $(if (Test-SaveSync) { 'SaveSync konnte nicht beendet werden.' } else { 'SaveSync beendet.' })
+}
+
 function Invoke-Ludusavi([string]$Mode, [string]$Backup) {
     if (-not (Test-Path -LiteralPath $cfg.Datei_Ludosavi)) {
         Write-Log "ludusavi nicht gefunden: $($cfg.Datei_Ludosavi)"
@@ -687,6 +706,7 @@ try {
         Set-Status 'Starte Satisfactory ohne Blueprint-Sync …'
         Write-Log 'Ohne Sync spielen gewählt.'
         try {
+            try { Stop-SaveSync } catch { }
             if (-not $State.GameStarted -and -not (Test-GameRunning)) { Start-Game }
             Wait-UI 120 { Test-GameRunning } | Out-Null
         } catch { }
